@@ -1,0 +1,37 @@
+/* @override 
+	http://www.appsaloon.be/OfficeDuino/OfficeDuino.css */
+
+ .ui-field-contain div.ui-slider-switch { width: 180px; }
+ fieldset.ui-controlgroup-vertical{
+ 	margin: 0 20px 0 0;
+ }
+ div.ui-grid-a{
+ 	margin: 0 0 40px 0;
+ }
+ div.farbtastic{
+ 	margin: 0 50px
+
+ }
+ .ui-page{
+ 	background-image: -webkit-gradient(linear, left bottom, left top, from(#1e1e1e), to(#474747));
+	 background-image: -moz-linear-gradient(90deg, #1e1e1e 0%, #474747 100%);
+ }
+h1.ui-title img{
+	width: 90px;
+	margin-right: 20px;
+}
+h1.ui-title{
+	color: #1a2e3e;
+	text-shadow: none;
+	border-bottom: 1px solid #1a2e3e;
+}
+h1.ui-title div{
+	display: inline;
+	position: relative;
+	top: -8px;
+	font-size: 15px;
+}
+div.ui-page div.ui-header.ui-bar-a{
+	background: -moz-linear-gradient(270deg, white 0%, #d4d4d4 100%) #f7f5f5;
+	background: -webkit-gradient(linear, left top, left bottom, from(white), to(#d4d4d4)) #f7f5f5;
+}
