@@ -1,22 +1,21 @@
 #include <EtherCard.h>
-#include <aJSON.h>
 
 // ethernet interface mac address, must be unique on the LAN
 static byte mymac[] = { 0x74,0x69,0x69,0x2D,0x30,0x31 };
 static byte myip[] = { 192,168,0,203 };
 
-byte Ethernet::buffer[300];
+byte Ethernet::buffer[400];
 BufferFiller bfill;
 
 char okHeader[] PROGMEM = 
     "HTTP/1.1 200 OK\r\n"
     "content-type:application/js;\r\n"
-    "\r\n"
-;
+    "\r\n";
 
 byte ra, rb, rc, rd, fe, ff, t;
 int fr, fg, fb;
 
+char* data;
 
 void setup () {
   Serial.begin(9600);
@@ -36,17 +35,7 @@ void setup () {
   pinMode(A1,OUTPUT);
   pinMode(A2,OUTPUT);
   pinMode(A3,OUTPUT);
-  
-  ra = 0;
-  rb = 0;
-  rc = 0;
-  rd = 0;
-  fe = 0;
-  ff = 0;
-  t  = 0;
-  fr = 0;
-  fg = 0;
-  fb = 0;
+
 }
 
 static int getIntArg(const char* data, const char* key, int value =-1) {
@@ -56,6 +45,7 @@ static int getIntArg(const char* data, const char* key, int value =-1) {
     return value;	
 }
 
+
 void loop () {
   word len = ether.packetReceive();
   word pos = ether.packetLoop(len);
@@ -63,33 +53,58 @@ void loop () {
   if (pos) { 
      bfill = ether.tcpOffset();
         char* data = (char *) Ethernet::buffer + pos;
-        Serial.println(data);
-        delay(10);
+        
+        
+        // first get to set the values of the UI
         if (strncmp("GET /i", data, 6) == 0){
-          
-           aJsonObject* root = aJson.createObject();
-          aJson.addNumberToObject(root, "relaisCpu", ra);
-          aJson.addNumberToObject(root, "relaisVer", rb);
-          aJson.addNumberToObject(root, "relaisK", rc);
-          aJson.addNumberToObject(root, "relaisT", rd);
-          aJson.addNumberToObject(root, "fetK", fe);
-          aJson.addNumberToObject(root, "fetT", ff);
-          aJson.addNumberToObject(root, "totaal", t);
-          aJson.addNumberToObject(root, "fetRood", fr);
-          aJson.addNumberToObject(root, "fetGroen", fg);
-          aJson.addNumberToObject(root, "fetBlauw", fb);
-          char* json =aJson.print(root);
-          
-          
-          delay(20); 
-          bfill.emit_p(PSTR(
-            "$F"
-            "callback("
-            "$S"
-            ");"
-            ),okHeader,json);
+            bfill.emit_p(PSTR(
+              "$F"
+              "callback("
+              "$D,$D,$D,$D,$D,$D,$D,$D,$D,$D"
+              ");"
+             ),okHeader,ra,rb,rc,rd,fe,ff,fr,fg,fb,t);
             
         }
+        
+        else if (strncmp("GET /l", data, 6) == 0){
+          int r, g, b, fsp;
+          if(data[6] == '?'){
+             fsp = getIntArg(data, "a");
+            
+            for (r = 0; r < 256; r++) { 
+              analogWrite(3, r);
+              delay(fsp);
+            } 
+            // fade from violet to red
+            for (b = 255; b > 0; b--) { 
+              analogWrite(9, b);
+              delay(fsp);
+            } 
+            // fade from red to yellow
+            for (g = 0; g < 256; g++) { 
+              analogWrite(6, g);
+              delay(fsp);
+            } 
+            // fade from yellow to green
+            for (r = 255; r > 0; r--) { 
+              analogWrite(3, r);
+              delay(fsp);
+            } 
+            // fade from green to teal
+            for (b = 0; b < 256; b++) { 
+              analogWrite(9, b);
+              delay(fsp);
+            } 
+            // fade from teal to blue
+            for (g = 255; g > 0; g--) { 
+              analogWrite(6, g);
+              delay(fsp);
+            }
+          } 
+        }
+        
+        
+        // send data from ui to arduino
         else if (strncmp("GET /s", data, 6) == 0){
           if(data[6] == '?'){
             ra = getIntArg(data, "a");
@@ -167,36 +182,23 @@ void loop () {
               break;
             }
           }
-
           
-          aJsonObject* root = aJson.createObject();
-          aJson.addNumberToObject(root, "relaisCpu", ra);
-          aJson.addNumberToObject(root, "relaisVer", rb);
-          aJson.addNumberToObject(root, "relaisK", rc);
-          aJson.addNumberToObject(root, "relaisT", rd);
-          aJson.addNumberToObject(root, "fetK", fe);
-          aJson.addNumberToObject(root, "fetT", ff);
-          aJson.addNumberToObject(root, "totaal", t);
-          aJson.addNumberToObject(root, "fetRood", fr);
-          aJson.addNumberToObject(root, "fetGroen", fg);
-          aJson.addNumberToObject(root, "fetBlauw", fb);
-          char* json =aJson.print(root);
-          
-          delay(20); 
+ 
           bfill.emit_p(PSTR(
             "$F"
             "callback("
-            "$S"
+            "$D,$D,$D,$D,$D,$D,$D,$D,$D,$D"
             ");"
-            ),okHeader,json);
+            ),okHeader,ra,rb,rc,rd,fe,ff,fr,fg,fb,t);
         }
+        
         else
             bfill.emit_p(PSTR(
                 "HTTP/1.0 401 Unauthorized\r\n"
                 "Content-Type: text/html\r\n"
                 "\r\n"
                 "<h1>401 Unauthorized</h1>"));
-        delay(20); 
+
         ether.httpServerReply(bfill.position()); // send web page data
   }
 }

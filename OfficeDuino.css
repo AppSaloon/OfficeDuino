@@ -35,3 +35,13 @@ div.ui-page div.ui-header.ui-bar-a{
 	background: -moz-linear-gradient(270deg, white 0%, #d4d4d4 100%) #f7f5f5;
 	background: -webkit-gradient(linear, left top, left bottom, from(white), to(#d4d4d4)) #f7f5f5;
 }
+
+#sliders #sliderbox-red span.ui-btn-inner.ui-btn-corner-all {
+	background-color: red;
+}
+#sliders #sliderbox-green span.ui-btn-inner.ui-btn-corner-all {
+	background-color: green;
+}
+#sliders #sliderbox-blue span.ui-btn-inner.ui-btn-corner-all {
+	background-color: blue;
+}
