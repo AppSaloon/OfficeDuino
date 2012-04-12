@@ -124,18 +124,18 @@ void loop () {
             
             switch (ra) {
               case 0:
-                digitalWrite(8,LOW);
+                digitalWrite(A3,LOW);
                 break;
               case 1:
-                digitalWrite(8,HIGH);
+                digitalWrite(A3,HIGH);
                 break;
             }
             switch (rb) {
               case 0:
-                digitalWrite(4,LOW);
+                digitalWrite(A2,LOW);
                 break;
               case 1:
-                digitalWrite(4,HIGH);
+                digitalWrite(A2,HIGH);
                 break;
             }
              switch (rc) {
@@ -156,18 +156,18 @@ void loop () {
             }
             switch (fe) {
               case 0:
-                digitalWrite(A2,LOW);
+                digitalWrite(8,LOW);
                 break;
               case 1:
-                digitalWrite(A2,HIGH);
+                digitalWrite(8,HIGH);
                 break;
             }
             switch (ff) {
               case 0:
-                digitalWrite(A3,LOW);
+                digitalWrite(4,LOW);
                 break;
               case 1:
-                digitalWrite(A3,HIGH);
+                digitalWrite(4,HIGH);
                 break;
             }
             switch (t) {

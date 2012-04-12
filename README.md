@@ -12,4 +12,4 @@ It is connected to 4 relais and 5 mosfets, to control:
 
 The ethernet shield that is been used is a ENC28J60 and uses the [ethercard](https://github.com/jcw/ethercard) library.
 
-The data is send by url to the arduino and the arduino sends his state back in a json format. 
+The data is send by url to the arduino and the arduino sends his state back in a function. 
